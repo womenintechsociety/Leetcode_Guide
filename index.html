@@ -1,0 +1,1910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DSA Culture — A Leetcode's Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@400;500;700;800;900&family=Anybody:ital,wght@0,400;0,700;1,400;1,700&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f5f2eb;
+  --bg2: #eee9df;
+  --ink: #1a1612;
+  --ink2: #3d3628;
+  --muted: #8a7f6e;
+  --border: #d6cfc0;
+  --accent: #e8500a;
+  --accent2: #2a5cdb;
+  --accent3: #1a9e5c;
+  --accent4: #d4a017;
+  --surface: #fff9f0;
+  --easy: #1a9e5c;
+  --medium: #d4a017;
+  --hard: #c0392b;
+  --stamp-color: #e8500a;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  line-height: 1.75;
+  overflow-x: hidden;
+}
+
+/* Paper texture overlay */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 999;
+}
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg2); }
+::-webkit-scrollbar-thumb { background: var(--accent); }
+
+/* PROGRESS */
+.progress-bar {
+  position: fixed;
+  top: 0; left: 0;
+  height: 3px;
+  background: var(--accent);
+  z-index: 200;
+  width: 0%;
+  transition: width 0.1s;
+}
+
+/* NAV */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  background: rgba(245,242,235,0.9);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2.5rem;
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.nav-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--accent);
+  color: white;
+  font-family: 'Cabinet Grotesk', sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 3px 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.nav-title {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+}
+
+.nav-links {
+  display: flex;
+  gap: 0;
+  list-style: none;
+}
+
+.nav-links a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 6px 12px;
+  transition: color 0.2s;
+  border-right: 1px solid var(--border);
+}
+
+.nav-links li:first-child a { border-left: 1px solid var(--border); }
+.nav-links a:hover, .nav-links a.active { color: var(--accent); background: var(--bg2); }
+
+/* HERO — newspaper layout */
+.hero {
+  padding: 6rem 2.5rem 0;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.hero-kicker {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--ink);
+  opacity: 0;
+  animation: fadeIn 0.5s 0.1s forwards;
+}
+
+.kicker-tag {
+  font-family: 'Cabinet Grotesk', sans-serif;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  border: 2px solid var(--accent);
+  padding: 2px 8px;
+}
+
+.kicker-line {
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+}
+
+.hero-layout {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 3rem;
+  align-items: start;
+  opacity: 0;
+  animation: fadeIn 0.5s 0.3s forwards;
+}
+
+.hero-main {}
+
+.hero-headline {
+  font-family: 'Anybody', sans-serif;
+  font-size: clamp(3rem, 7vw, 5.5rem);
+  font-weight: 900;
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+}
+
+.hero-headline .ital {
+  font-style: italic;
+  color: var(--accent);
+}
+
+.hero-headline .underline-word {
+  position: relative;
+  display: inline-block;
+}
+
+.hero-headline .underline-word::after {
+  content: '';
+  position: absolute;
+  bottom: 4px;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--accent2);
+}
+
+.hero-deck {
+  font-family: 'Cabinet Grotesk', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--ink2);
+  max-width: 480px;
+  margin-bottom: 2rem;
+  border-left: 3px solid var(--accent);
+  padding-left: 1rem;
+}
+
+.hero-byline {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.hero-byline strong { color: var(--ink); }
+
+/* Hero sidebar */
+.hero-sidebar {
+  border-left: 2px solid var(--ink);
+  padding-left: 2rem;
+}
+
+.sidebar-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 0.6rem 0;
+  border-bottom: 1px dashed var(--border);
+}
+
+.stat-row:last-of-type { border-bottom: none; }
+
+.stat-big {
+  font-family: 'Anybody', sans-serif;
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--accent);
+  line-height: 1;
+}
+
+.stat-lbl {
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+  text-align: right;
+  max-width: 120px;
+  line-height: 1.3;
+}
+
+.sidebar-cta {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: var(--ink);
+  color: white;
+  text-align: center;
+}
+
+.sidebar-cta p {
+  font-family: 'Cabinet Grotesk', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  line-height: 1.3;
+}
+
+.cta-btn {
+  display: block;
+  background: var(--accent);
+  color: white;
+  text-decoration: none;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 8px 16px;
+  font-family: 'DM Mono', monospace;
+  transition: background 0.2s;
+  cursor: pointer;
+  border: none;
+  width: 100%;
+}
+
+.cta-btn:hover { background: #c44008; }
+
+/* RULES BAR */
+.rules-bar {
+  max-width: 1200px;
+  margin: 2rem auto 0;
+  padding: 0 2.5rem;
+  display: flex;
+  gap: 0;
+  border: 2px solid var(--ink);
+  background: var(--ink);
+  opacity: 0;
+  animation: fadeIn 0.5s 0.5s forwards;
+}
+
+.rule-item {
+  flex: 1;
+  padding: 0.6rem 1.2rem;
+  border-right: 1px solid rgba(255,255,255,0.1);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.rule-item:last-child { border-right: none; }
+
+.rule-num {
+  font-family: 'Anybody', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 900;
+  color: var(--accent);
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.rule-text {
+  font-size: 11px;
+  color: rgba(255,255,255,0.7);
+  line-height: 1.3;
+}
+
+.rule-text strong { color: white; display: block; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* MAIN */
+main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2.5rem 6rem;
+}
+
+/* SECTION */
+section {
+  padding: 4rem 0;
+  border-bottom: 2px solid var(--ink);
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s, transform 0.6s;
+}
+
+section.visible { opacity: 1; transform: translateY(0); }
+
+.section-header {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: start;
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.section-num {
+  font-family: 'Anybody', sans-serif;
+  font-size: 5rem;
+  font-weight: 900;
+  line-height: 0.85;
+  color: var(--border);
+  letter-spacing: -0.05em;
+  user-select: none;
+}
+
+.section-head-text {}
+
+.section-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); max-width: 60px; }
+
+.section-title {
+  font-family: 'Anybody', sans-serif;
+  font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  text-transform: uppercase;
+}
+
+.section-sub {
+  font-family: 'Cabinet Grotesk', sans-serif;
+  font-size: 1rem;
+  color: var(--muted);
+  margin-top: 0.5rem;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+/* AUDIENCE TOGGLE */
+.audience-toggle {
+  display: flex;
+  border: 2px solid var(--ink);
+  overflow: hidden;
+  width: fit-content;
+  margin-bottom: 2.5rem;
+}
+
+.aud-btn {
+  padding: 0.6rem 1.5rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  transition: all 0.2s;
+  border-right: 2px solid var(--ink);
+  text-transform: uppercase;
+}
+
+.aud-btn:last-child { border-right: none; }
+.aud-btn.active { background: var(--ink); color: white; }
+.aud-btn:not(.active):hover { background: var(--bg2); color: var(--ink); }
+
+.tab-content { display: none; }
+.tab-content.active { display: block; animation: fadeIn 0.3s forwards; }
+
+/* CALLOUT BOXES */
+.callout {
+  display: flex;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  margin: 1.5rem 0;
+  font-family: 'Cabinet Grotesk', sans-serif;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.callout-honest {
+  background: var(--bg2);
+  border: 2px solid var(--ink);
+  border-left: 6px solid var(--ink);
+}
+
+.callout-tip {
+  background: rgba(232,80,10,0.06);
+  border: 1px solid rgba(232,80,10,0.3);
+  border-left: 4px solid var(--accent);
+}
+
+.callout-community {
+  background: rgba(42,92,219,0.06);
+  border: 1px solid rgba(42,92,219,0.3);
+  border-left: 4px solid var(--accent2);
+}
+
+.callout-success {
+  background: rgba(26,158,92,0.06);
+  border: 1px solid rgba(26,158,92,0.3);
+  border-left: 4px solid var(--accent3);
+}
+
+.callout-icon { font-size: 1.2rem; flex-shrink: 0; }
+.callout-lbl { font-size: 10px; font-weight: 800; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.25rem; font-family: 'DM Mono', monospace; }
+
+/* CARD GRIDS */
+.cards-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border: 2px solid var(--ink);
+}
+
+.cards-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  border: 2px solid var(--ink);
+}
+
+.cards-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border: 2px solid var(--ink);
+}
+
+@media (max-width: 900px) {
+  .cards-3 { grid-template-columns: 1fr 1fr; }
+  .cards-4 { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 600px) {
+  .cards-3, .cards-2, .cards-4 { grid-template-columns: 1fr; }
+  .hero-layout { grid-template-columns: 1fr; }
+  .hero-sidebar { border-left: none; border-top: 2px solid var(--ink); padding-left: 0; padding-top: 1.5rem; }
+  .rules-bar { flex-direction: column; }
+  .section-header { grid-template-columns: 1fr; gap: 0.5rem; }
+  .section-num { font-size: 3rem; }
+  nav { padding: 0 1rem; }
+  .nav-links { display: none; }
+  .hero { padding: 5rem 1.25rem 0; }
+  main { padding: 0 1.25rem 4rem; }
+  .rules-bar { padding: 0 1.25rem; }
+}
+
+.grid-card {
+  padding: 1.75rem;
+  border-right: 2px solid var(--ink);
+  border-bottom: 2px solid var(--ink);
+  transition: background 0.2s;
+  position: relative;
+}
+
+.cards-3 .grid-card:nth-child(3n),
+.cards-4 .grid-card:nth-child(4n),
+.cards-2 .grid-card:nth-child(2n) { border-right: none; }
+
+.cards-3 .grid-card:nth-last-child(-n+3):nth-child(3n+1) ~ .grid-card,
+.cards-3 .grid-card:nth-last-child(-n+3) { border-bottom: none; }
+
+/* simpler: just remove bottom border from last row globally */
+.cards-3 .grid-card:last-child,
+.cards-4 .grid-card:last-child,
+.cards-2 .grid-card:last-child { border-bottom: none; }
+
+/* Remove right border from every 3rd in 3-col */
+.cards-3 > .grid-card:nth-child(3n) { border-right: none; }
+.cards-4 > .grid-card:nth-child(4n) { border-right: none; }
+.cards-2 > .grid-card:nth-child(2n) { border-right: none; }
+
+/* Remove bottom border from cards that are in the last row */
+.cards-3 > .grid-card:nth-last-child(-n+3) { border-bottom: none; }
+.cards-4 > .grid-card:nth-last-child(-n+4) { border-bottom: none; }
+.cards-2 > .grid-card:nth-last-child(-n+2) { border-bottom: none; }
+
+.grid-card:hover { background: var(--bg2); }
+
+.card-accent-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--accent);
+  margin-bottom: 1rem;
+}
+
+.card-accent-dot.blue { background: var(--accent2); }
+.card-accent-dot.green { background: var(--accent3); }
+.card-accent-dot.gold { background: var(--accent4); }
+
+.card-num {
+  font-family: 'Anybody', sans-serif;
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: var(--border);
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+
+.grid-card:hover .card-num { color: var(--accent); }
+
+.card-title {
+  font-family: 'Cabinet Grotesk', sans-serif;
+  font-size: 1rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  line-height: 1.2;
+}
+
+.card-text {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.7;
+  font-family: 'DM Mono', monospace;
+}
+
+/* PHASE ACCORDION */
+.phases { border: 2px solid var(--ink); }
+
+.phase {
+  border-bottom: 2px solid var(--ink);
+  cursor: pointer;
+}
+
+.phase:last-child { border-bottom: none; }
+
+.phase-header {
+  display: grid;
+  grid-template-columns: 64px 1fr auto;
+  align-items: center;
+  gap: 0;
+  padding: 1.25rem 1.5rem;
+  transition: background 0.2s;
+  user-select: none;
+}
+
+.phase-header:hover { background: var(--bg2); }
+.phase.open .phase-header { background: var(--ink); color: white; }
+
+.phase-num-box {
+  font-family: 'Anybody', sans-serif;
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--muted);
+  line-height: 1;
+}
+
+.phase.open .phase-num-box { color: var(--accent); }
+
+.phase-head-text {}
+
+.phase-meta {
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.2rem;
+  font-family: 'DM Mono', monospace;
+}
+
+.phase.open .phase-meta { color: rgba(255,255,255,0.5); }
+
+.phase-name {
+  font-family: 'Cabinet Grotesk', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 800;
+}
+
+.phase-desc {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 0.15rem;
+  font-family: 'DM Mono', monospace;
+}
+
+.phase.open .phase-desc { color: rgba(255,255,255,0.6); }
+
+.phase-tags {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
+}
+
+.tag {
+  font-size: 9px;
+  padding: 2px 7px;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.phase.open .tag { border-color: rgba(255,255,255,0.2); color: rgba(255,255,255,0.5); }
+
+.phase-arrow {
+  font-size: 1.2rem;
+  color: var(--muted);
+  transition: transform 0.3s;
+}
+
+.phase.open .phase-arrow { transform: rotate(180deg); color: white; }
+
+.phase-body {
+  display: none;
+  padding: 2rem 1.5rem;
+  border-top: 1px solid var(--border);
+}
+
+.phase.open .phase-body { display: block; animation: fadeIn 0.3s forwards; }
+
+/* PROBLEM TABLE */
+.ptable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  margin-top: 1.5rem;
+}
+
+.ptable thead tr { border-bottom: 2px solid var(--ink); }
+.ptable th {
+  padding: 8px 12px;
+  text-align: left;
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.ptable td {
+  padding: 9px 12px;
+  border-bottom: 1px dashed var(--border);
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--ink2);
+}
+
+.ptable tr:hover td { background: var(--bg2); }
+.ptable tr:last-child td { border-bottom: none; }
+
+.diff {
+  display: inline-block;
+  padding: 1px 7px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: 1px solid;
+}
+
+.diff-easy { color: var(--easy); border-color: var(--easy); background: rgba(26,158,92,0.08); }
+.diff-medium { color: var(--medium); border-color: var(--medium); background: rgba(212,160,23,0.08); }
+.diff-hard { color: var(--hard); border-color: var(--hard); background: rgba(192,57,43,0.08); }
+
+/* HABIT TRACKER */
+.habit-section {
+  background: var(--ink);
+  color: white;
+  padding: 3rem;
+  margin: 0;
+}
+
+.habit-title {
+  font-family: 'Anybody', sans-serif;
+  font-size: 2rem;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  margin-bottom: 0.25rem;
+}
+
+.habit-title span { color: var(--accent); }
+
+.habit-sub {
+  font-family: 'Cabinet Grotesk', sans-serif;
+  font-size: 1rem;
+  color: rgba(255,255,255,0.5);
+  margin-bottom: 2rem;
+}
+
+.week-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  margin-bottom: 1rem;
+}
+
+.day-box {
+  aspect-ratio: 1;
+  border: 1px solid rgba(255,255,255,0.15);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.day-box:hover { border-color: var(--accent); }
+
+.day-box.done { background: var(--accent); border-color: var(--accent); }
+
+.day-lbl {
+  font-size: 9px;
+  color: rgba(255,255,255,0.4);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.day-box.done .day-lbl { color: rgba(255,255,255,0.7); }
+
+.day-num {
+  font-family: 'Anybody', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: rgba(255,255,255,0.3);
+}
+
+.day-box.done .day-num { color: white; }
+
+.day-check { font-size: 1rem; opacity: 0; }
+.day-box.done .day-check { opacity: 1; }
+
+.habit-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.streak-count {
+  font-family: 'Anybody', sans-serif;
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: var(--accent);
+  line-height: 1;
+}
+
+.streak-lbl { font-size: 10px; color: rgba(255,255,255,0.5); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 2px; }
+
+.reset-btn {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: rgba(255,255,255,0.3);
+  background: none;
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 4px 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.08em;
+}
+
+.reset-btn:hover { color: rgba(255,255,255,0.6); border-color: rgba(255,255,255,0.3); }
+
+.habit-pledge {
+  margin-top: 1.5rem;
+  padding: 1.25rem;
+  border: 1px solid rgba(255,255,255,0.1);
+  font-family: 'Cabinet Grotesk', sans-serif;
+  font-size: 0.9rem;
+  color: rgba(255,255,255,0.6);
+  font-style: italic;
+  text-align: center;
+  line-height: 1.6;
+}
+
+.habit-pledge strong { color: white; font-style: normal; }
+
+/* PROCRASTINATION SECTION */
+.procra-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  border: 2px solid var(--ink);
+}
+
+.procra-col {
+  padding: 2rem;
+}
+
+.procra-col:first-child { border-right: 2px solid var(--ink); }
+
+.procra-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.procra-label.bad { color: var(--hard); }
+.procra-label.good { color: var(--accent3); }
+
+.procra-item {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.6rem 0;
+  border-bottom: 1px dashed var(--border);
+  font-size: 12px;
+  line-height: 1.5;
+  align-items: flex-start;
+}
+
+.procra-item:last-child { border-bottom: none; }
+
+.procra-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+.bad .procra-dot { background: var(--hard); }
+.good .procra-dot { background: var(--accent3); }
+
+/* PATTERNS */
+.pattern-list { display: flex; flex-direction: column; gap: 0; border: 2px solid var(--ink); }
+
+.pattern-row {
+  display: grid;
+  grid-template-columns: 48px 1fr 1fr;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.2s;
+}
+
+.pattern-row:last-child { border-bottom: none; }
+.pattern-row:hover { background: var(--bg2); }
+
+.pr-num {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-right: 1px solid var(--border);
+  font-family: 'Anybody', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: var(--border);
+  padding: 0.9rem 0;
+}
+
+.pattern-row:hover .pr-num { color: var(--accent); }
+
+.pr-name {
+  padding: 0.9rem 1rem;
+  font-family: 'Cabinet Grotesk', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  border-right: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+}
+
+.pr-hint {
+  padding: 0.9rem 1rem;
+  font-size: 11px;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  line-height: 1.5;
+}
+
+/* COMMUNITY SECTION */
+.community-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  border: 2px solid var(--ink);
+}
+
+/* BIG O TABLE */
+.bigo {
+  width: 100%;
+  border-collapse: collapse;
+  border: 2px solid var(--ink);
+  margin-top: 2rem;
+}
+
+.bigo th {
+  background: var(--ink);
+  color: white;
+  padding: 10px 14px;
+  text-align: left;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-family: 'DM Mono', monospace;
+  font-weight: 500;
+}
+
+.bigo td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--ink2);
+}
+
+.bigo tr:last-child td { border-bottom: none; }
+.bigo tr:hover td { background: var(--bg2); }
+
+.badge {
+  display: inline-block;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  padding: 2px 8px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  color: var(--accent);
+  font-weight: 500;
+}
+
+/* TIMELINE */
+.timeline { display: flex; flex-direction: column; }
+
+.tl-row {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  border-bottom: 1px solid var(--border);
+}
+
+.tl-row:last-child { border-bottom: none; }
+
+.tl-month {
+  padding: 1.25rem 1.5rem 1.25rem 0;
+  border-right: 2px solid var(--ink);
+  font-family: 'Anybody', sans-serif;
+  font-weight: 900;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--accent);
+  display: flex;
+  align-items: flex-start;
+  padding-top: 1.4rem;
+}
+
+.tl-content { padding: 1.25rem 0 1.25rem 1.5rem; }
+
+.tl-phase { font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.2rem; }
+.tl-name { font-family: 'Cabinet Grotesk', sans-serif; font-size: 1rem; font-weight: 800; margin-bottom: 0.25rem; }
+.tl-topics { font-size: 11px; color: var(--muted); font-style: italic; }
+
+/* RESOURCES */
+.resource-list { display: flex; flex-direction: column; border: 2px solid var(--ink); }
+
+.resource-item {
+  display: grid;
+  grid-template-columns: 48px 1fr auto;
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+  padding: 1rem 1.25rem;
+  gap: 1.25rem;
+  transition: background 0.2s;
+}
+
+.resource-item:last-child { border-bottom: none; }
+.resource-item:hover { background: var(--bg2); }
+
+.resource-icon { font-size: 1.4rem; text-align: center; }
+
+.resource-name {
+  font-family: 'Cabinet Grotesk', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 800;
+  margin-bottom: 0.1rem;
+}
+
+.resource-desc { font-size: 11px; color: var(--muted); }
+
+.resource-tag {
+  font-size: 9px;
+  padding: 3px 8px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: 1px solid;
+  white-space: nowrap;
+}
+
+.res-start { color: var(--accent3); border-color: var(--accent3); }
+.res-after { color: var(--accent2); border-color: var(--accent2); }
+.res-advanced { color: var(--accent); border-color: var(--accent); }
+
+/* FINAL CTA */
+.final-cta {
+  text-align: center;
+  padding: 5rem 2rem;
+  background: var(--ink);
+  color: white;
+}
+
+.final-headline {
+  font-family: 'Anybody', sans-serif;
+  font-size: clamp(2rem, 5vw, 4rem);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  margin-bottom: 1rem;
+}
+
+.final-headline span { color: var(--accent); }
+
+.final-sub {
+  font-family: 'Cabinet Grotesk', sans-serif;
+  font-size: 1.1rem;
+  color: rgba(255,255,255,0.5);
+  max-width: 480px;
+  margin: 0 auto 2.5rem;
+  line-height: 1.6;
+}
+
+.final-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+
+.btn-white {
+  display: inline-block;
+  background: white;
+  color: var(--ink);
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.8rem 2rem;
+  text-decoration: none;
+  transition: all 0.2s;
+  cursor: pointer;
+  border: none;
+}
+
+.btn-white:hover { background: var(--accent); color: white; }
+
+.btn-outline-white {
+  display: inline-block;
+  background: transparent;
+  color: white;
+  border: 2px solid rgba(255,255,255,0.3);
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.8rem 2rem;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.btn-outline-white:hover { border-color: white; background: rgba(255,255,255,0.05); }
+
+/* STAMP */
+.stamp {
+  display: inline-block;
+  border: 3px solid var(--accent);
+  color: var(--accent);
+  font-family: 'Anybody', sans-serif;
+  font-size: 1rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 6px 16px;
+  transform: rotate(-3deg);
+  opacity: 0.7;
+  user-select: none;
+}
+
+/* FOOTER */
+footer {
+  padding: 1.5rem 2.5rem;
+  background: var(--bg2);
+  border-top: 2px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+footer strong { color: var(--ink); }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+
+<nav>
+  <div class="nav-brand">
+    <span class="nav-title">DSA Guide</span>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#begin">Begin</a></li>
+    <li><a href="#habits">Habits</a></li>
+    <li><a href="#roadmap">Roadmap</a></li>
+    <li><a href="#patterns">Patterns</a></li>
+    <li><a href="#community">Community</a></li>
+    <li><a href="#resources">Resources</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-kicker">
+    <span class="kicker-tag">DSA Guide</span>
+    <span class="kicker-line">For members · By members · Made to last</span>
+    <span style="margin-left:auto; font-size:10px; color:var(--muted);">Edition 2025</span>
+  </div>
+
+  <div class="hero-layout">
+    <div class="hero-main">
+      <h1 class="hero-headline">
+        Stop<br>
+        <span class="ital">Waiting.</span><br>
+        Start <span class="underline-word">Coding.</span>
+      </h1>
+      <p class="hero-deck">
+        This isn't just a list of problems. It's a system for building the habit of showing up — for yourself, your logic, and your community. Interviews are optional. The habit isn't.
+      </p>
+      <div class="hero-byline">
+        <span>Published by <strong>WiTS</strong></span>
+        <span>·</span>
+        <span>For <strong>all members</strong></span>
+        <span>·</span>
+        <span>No prior experience required</span>
+      </div>
+    </div>
+
+    <div class="hero-sidebar">
+      <div class="sidebar-label">At a Glance</div>
+      <div class="stat-row">
+        <div class="stat-big">200+</div>
+        <div class="stat-lbl">target problems (at your own pace)</div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-big">4</div>
+        <div class="stat-lbl">learning phases, zero gatekeeping</div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-big">1–2</div>
+        <div class="stat-lbl">problems a day is all it takes</div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-big">0</div>
+        <div class="stat-lbl">prerequisites beyond basic coding</div>
+      </div>
+      <div class="sidebar-cta">
+        <p>Your first problem is waiting. It won't solve itself.</p>
+        <a href="https://leetcode.com" target="_blank" class="cta-btn">Open LeetCode →</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- RULES BAR -->
+<div class="rules-bar">
+  <div class="rule-item">
+    <div class="rule-num">01</div>
+    <div class="rule-text"><strong>Do it daily.</strong> 1 problem. Every day.</div>
+  </div>
+  <div class="rule-item">
+    <div class="rule-num">02</div>
+    <div class="rule-text"><strong>Struggle first.</strong> Look at solutions after 25 min.</div>
+  </div>
+  <div class="rule-item">
+    <div class="rule-num">03</div>
+    <div class="rule-text"><strong>Follow a list.</strong> Random grinding doesn't work.</div>
+  </div>
+  <div class="rule-item">
+    <div class="rule-num">04</div>
+    <div class="rule-text"><strong>No pressure.</strong> Interviews are optional. Logic is the goal.</div>
+  </div>
+</div>
+
+<main>
+
+  <!-- BEGIN SECTION -->
+  <section id="begin">
+    <div class="section-header">
+      <div class="section-num">01</div>
+      <div class="section-head-text">
+        <div class="section-label">Where You're Starting</div>
+        <div class="section-title">Know Your<br>Starting Point</div>
+        <div class="section-sub">This guide works for everyone. Pick the path that fits you right now.</div>
+      </div>
+    </div>
+
+    <div class="audience-toggle">
+      <button class="aud-btn active" onclick="switchAud('zero', this)">🌱 Complete Zero</button>
+      <button class="aud-btn" onclick="switchAud('some', this)">⚡ Know a Bit</button>
+      <button class="aud-btn" onclick="switchAud('restart', this)">🔁 Restarting</button>
+    </div>
+
+    <div id="tab-zero" class="tab-content active">
+      <div class="callout callout-honest">
+        <div class="callout-icon">👋</div>
+        <div>
+          <div class="callout-lbl">You are a complete beginner if...</div>
+          You know variables, loops, and functions in at least one language — but you've never looked at a LeetCode problem. That's completely fine. This guide starts at zero.
+        </div>
+      </div>
+
+      <p style="font-family:'Cabinet Grotesk',sans-serif; font-size:1rem; font-weight:500; margin-bottom:1.25rem; color:var(--ink2);">Your actual first steps (before solving a single LeetCode problem):</p>
+
+      <div class="cards-2">
+        <div class="grid-card">
+          <div class="card-num">1.</div>
+          <div class="card-title">Get comfortable with arrays & strings</div>
+          <div class="card-text">Know how to loop through them, access elements, slice, reverse. This is your bread and butter for the first 50 problems.</div>
+        </div>
+        <div class="grid-card">
+          <div class="card-num">2.</div>
+          <div class="card-title">Understand HashMaps / Dictionaries</div>
+          <div class="card-text">One data structure that unlocks ~30% of easy problems. Practice storing and looking up key-value pairs in your language.</div>
+        </div>
+        <div class="grid-card">
+          <div class="card-num">3.</div>
+          <div class="card-title">Create your LeetCode account</div>
+          <div class="card-text">Go to leetcode.com → Sign up → Head to Explore → Start the "Beginner's Guide" card. No local setup needed — use the browser editor.</div>
+        </div>
+        <div class="grid-card">
+          <div class="card-num">4.</div>
+          <div class="card-title">Pick Python if unsure</div>
+          <div class="card-text">Python's clean syntax means you spend time thinking about the problem, not fighting the language. Easiest for beginners, still widely used in interviews.</div>
+        </div>
+      </div>
+
+      <div class="callout callout-tip" style="margin-top:1.5rem;">
+        <div class="callout-icon">💡</div>
+        <div>
+          <div class="callout-lbl">Society Tip</div>
+          Come to the society sessions. Watching someone else think through a problem out loud is one of the fastest ways to learn. You don't need to share your solution — just being there helps.
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-some" class="tab-content">
+      <div class="callout callout-honest">
+        <div class="callout-icon">⚡</div>
+        <div>
+          <div class="callout-lbl">You know a bit if...</div>
+          You've seen some data structures, maybe solved 5–10 easy LeetCode problems, but you don't have a system and you're not consistent. You feel like you "should be further along."
+        </div>
+      </div>
+
+      <p style="font-family:'Cabinet Grotesk',sans-serif; font-size:1rem; font-weight:500; margin-bottom:1.25rem; color:var(--ink2);">What's likely holding you back:</p>
+
+      <div class="cards-3">
+        <div class="grid-card">
+          <div class="card-accent-dot"></div>
+          <div class="card-title">Solving randomly</div>
+          <div class="card-text">Picking problems with no plan. Fix: follow Blind 75 or Striver's SDE Sheet in order.</div>
+        </div>
+        <div class="grid-card">
+          <div class="card-accent-dot blue"></div>
+          <div class="card-title">Looking too fast</div>
+          <div class="card-text">Checking solutions after 5 minutes builds an illusion of knowledge, not actual skill.</div>
+        </div>
+        <div class="grid-card">
+          <div class="card-accent-dot green"></div>
+          <div class="card-title">Inconsistency</div>
+          <div class="card-text">Solving 15 problems on Saturday, then nothing for 10 days, then guilt-solving again. Break the cycle.</div>
+        </div>
+      </div>
+
+      <div class="callout callout-community" style="margin-top:1.5rem;">
+        <div class="callout-icon">👥</div>
+        <div>
+          <div class="callout-lbl">You're not behind</div>
+          Everyone in the society is at a different stage. The only comparison that matters is you vs. you from last week.
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-restart" class="tab-content">
+      <div class="callout callout-honest">
+        <div class="callout-icon">🔁</div>
+        <div>
+          <div class="callout-lbl">You're restarting if...</div>
+          You burned out before. Maybe you went hard for a week, then stopped. Or you felt like you'd "lost" all your progress. You haven't. Restarting is a skill.
+        </div>
+      </div>
+
+      <p style="font-family:'Cabinet Grotesk',sans-serif; font-size:1rem; font-weight:500; margin-bottom:1.25rem; color:var(--ink2);">The restart protocol — three things only:</p>
+
+      <div class="cards-3">
+        <div class="grid-card">
+          <div class="card-num">1.</div>
+          <div class="card-title">Do one easy problem. Right now.</div>
+          <div class="card-text">Not tomorrow. Not after you re-read theory. One problem. Even if it takes 45 minutes. Momentum beats motivation every time.</div>
+        </div>
+        <div class="grid-card">
+          <div class="card-num">2.</div>
+          <div class="card-title">Set a floor, not a ceiling</div>
+          <div class="card-text">Your minimum is 1 problem/day. Not 5. Not 3. One. You can always do more, but 1 is the non-negotiable. This is how you build a streak that survives exams and life.</div>
+        </div>
+        <div class="grid-card">
+          <div class="card-num">3.</div>
+          <div class="card-title">Tell someone in the society</div>
+          <div class="card-text">Accountability is massively underrated. Tell someone you're restarting. Even posting in the group chat once a day builds commitment.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ANTI-PROCRASTINATION SECTION -->
+  <section id="habits">
+    <div class="section-header">
+      <div class="section-num">02</div>
+      <div class="section-head-text">
+        <div class="section-label">The Real Work</div>
+        <div class="section-title">Kill the<br>Procrastination</div>
+        <div class="section-sub">The biggest obstacle isn't difficulty. It's starting. Every single day.</div>
+      </div>
+    </div>
+
+    <div class="procra-grid">
+      <div class="procra-col bad">
+        <div class="procra-label bad">❌ What doesn't work</div>
+        <div class="procra-item bad"><div class="procra-dot"></div><div>"I'll start properly on Monday."</div></div>
+        <div class="procra-item bad"><div class="procra-dot"></div><div>Solving 10 problems in one day, then nothing for a week.</div></div>
+        <div class="procra-item bad"><div class="procra-dot"></div><div>"I need to revise theory before I start solving."</div></div>
+        <div class="procra-item bad"><div class="procra-dot"></div><div>Looking at solutions within 10 minutes of starting.</div></div>
+        <div class="procra-item bad"><div class="procra-dot"></div><div>Comparing your Day 5 to someone else's Month 5.</div></div>
+        <div class="procra-item bad"><div class="procra-dot"></div><div>Waiting to "feel motivated" before opening the laptop.</div></div>
+      </div>
+      <div class="procra-col good">
+        <div class="procra-label good">✅ What actually works</div>
+        <div class="procra-item good"><div class="procra-dot"></div><div>Opening LeetCode right now, even for 20 minutes.</div></div>
+        <div class="procra-item good"><div class="procra-dot"></div><div>1 problem daily, no exceptions. Even on bad days.</div></div>
+        <div class="procra-item good"><div class="procra-dot"></div><div>Learning theory through problems — not before them.</div></div>
+        <div class="procra-item good"><div class="procra-dot"></div><div>Spending real time struggling. That's where learning happens.</div></div>
+        <div class="procra-item good"><div class="procra-dot"></div><div>Tracking your own streak. Comparing yourself to last week's you.</div></div>
+        <div class="procra-item good"><div class="procra-dot"></div><div>Using the community — post a question, share a win, ask for help.</div></div>
+      </div>
+    </div>
+
+    <div class="callout callout-honest" style="margin-top:2rem;">
+      <div class="callout-icon">🎯</div>
+      <div>
+        <div class="callout-lbl">The honest truth about LeetCode</div>
+        There is no shortcut. No magic video series. No perfect resource. You get better by solving problems — slowly, imperfectly, and repeatedly. The people who succeed aren't smarter. They just sat down and did it, even when they didn't feel like it.
+      </div>
+    </div>
+
+    <!-- HABIT TRACKER -->
+    <div class="habit-section" style="margin-top:2rem; border:2px solid var(--ink);">
+      <div class="habit-title">Your <span>Weekly</span> Streak</div>
+      <div class="habit-sub">Click a day to mark it done. One problem = one tick.</div>
+
+      <div class="week-grid" id="weekGrid"></div>
+
+      <div class="habit-meta">
+        <div>
+          <div class="streak-count" id="streakCount">0</div>
+          <div class="streak-lbl">days this week</div>
+        </div>
+        <button class="reset-btn" onclick="resetStreak()">Reset Week</button>
+      </div>
+
+      <div class="habit-pledge">
+        "<strong>I will solve at least one problem today.</strong> Not because I have to. Because I'm building something — slowly, consistently, and on my own terms."
+      </div>
+    </div>
+  </section>
+
+  <!-- ROADMAP SECTION -->
+  <section id="roadmap">
+    <div class="section-header">
+      <div class="section-num">03</div>
+      <div class="section-head-text">
+        <div class="section-label">The Path</div>
+        <div class="section-title">4-Phase<br>Roadmap</div>
+        <div class="section-sub">Click any phase to expand. Work through them in order — each phase builds on the last. Don't rush.</div>
+      </div>
+    </div>
+
+    <div class="callout callout-community" style="margin-bottom:2rem;">
+      <div class="callout-icon">👥</div>
+      <div>
+        <div class="callout-lbl">Remember</div>
+        The goal is not to finish the fastest. The goal is to build intuition and the habit of thinking algorithmically. If you spend 3 days on one problem, that's not wasted — that's deep work.
+      </div>
+    </div>
+
+    <div class="phases" id="phases">
+
+      <div class="phase open" onclick="togglePhase(this)">
+        <div class="phase-header">
+          <div class="phase-num-box">01</div>
+          <div class="phase-head-text">
+            <div class="phase-meta">Problems 1–50 · ~4 Weeks · All Easy</div>
+            <div class="phase-name">Getting Comfortable</div>
+            <div class="phase-desc">Build instincts. Stop fearing the problem page.</div>
+            <div class="phase-tags">
+              <span class="tag">Arrays</span>
+              <span class="tag">Strings</span>
+              <span class="tag">HashMaps</span>
+              <span class="tag">Linked Lists</span>
+            </div>
+          </div>
+          <div class="phase-arrow">▼</div>
+        </div>
+        <div class="phase-body">
+          <div class="callout callout-tip">
+            <div class="callout-icon">🎯</div>
+            <div>
+              <div class="callout-lbl">Phase Goal</div>
+              Solve Easy problems on your own without hints. Understand that a HashMap often turns an O(n²) brute-force into an O(n) solution. Be able to explain what you did — even badly.
+            </div>
+          </div>
+
+          <p style="margin:1.5rem 0 0; font-size:9px; letter-spacing:0.15em; text-transform:uppercase; color:var(--muted); font-weight:700;">Suggested Problems to Start With</p>
+          <table class="ptable">
+            <thead>
+              <tr><th>Problem</th><th>Difficulty</th><th>Key Concept</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Two Sum</td><td><span class="diff diff-easy">Easy</span></td><td>HashMap</td></tr>
+              <tr><td>Best Time to Buy and Sell Stock</td><td><span class="diff diff-easy">Easy</span></td><td>Array Traversal</td></tr>
+              <tr><td>Valid Parentheses</td><td><span class="diff diff-easy">Easy</span></td><td>Stack</td></tr>
+              <tr><td>Contains Duplicate</td><td><span class="diff diff-easy">Easy</span></td><td>HashSet</td></tr>
+              <tr><td>Merge Sorted Array</td><td><span class="diff diff-easy">Easy</span></td><td>Two Pointers</td></tr>
+              <tr><td>Palindrome Number</td><td><span class="diff diff-easy">Easy</span></td><td>String / Math</td></tr>
+              <tr><td>Roman to Integer</td><td><span class="diff diff-easy">Easy</span></td><td>HashMap</td></tr>
+              <tr><td>Maximum Subarray</td><td><span class="diff diff-medium">Medium</span></td><td>Kadane's Algorithm</td></tr>
+              <tr><td>Linked List Cycle</td><td><span class="diff diff-easy">Easy</span></td><td>Fast & Slow Pointers</td></tr>
+              <tr><td>Reverse Linked List</td><td><span class="diff diff-easy">Easy</span></td><td>Linked List</td></tr>
+            </tbody>
+          </table>
+
+          <div class="callout callout-honest" style="margin-top:1.5rem;">
+            <div class="callout-icon">😤</div>
+            <div>
+              <div class="callout-lbl">Normal Feeling Alert</div>
+              If Two Sum takes you 45 minutes — that's fine. That's exactly right. It should feel hard at first. It won't feel hard by problem 20.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase" onclick="togglePhase(this)">
+        <div class="phase-header">
+          <div class="phase-num-box">02</div>
+          <div class="phase-head-text">
+            <div class="phase-meta">Problems 51–100 · ~4–5 Weeks · Easy to Medium</div>
+            <div class="phase-name">Building the Foundation</div>
+            <div class="phase-desc">Recursion, trees, and thinking in layers.</div>
+            <div class="phase-tags">
+              <span class="tag">Recursion</span>
+              <span class="tag">Binary Trees</span>
+              <span class="tag">Linked Lists</span>
+              <span class="tag">Stacks</span>
+            </div>
+          </div>
+          <div class="phase-arrow">▼</div>
+        </div>
+        <div class="phase-body">
+          <div class="callout callout-tip">
+            <div class="callout-icon">🌳</div>
+            <div>
+              <div class="callout-lbl">Draw it first</div>
+              Recursion and trees click when you draw them. Before writing a single line of code, sketch the tree on paper. Trace the function calls. This habit alone saves hours of debugging.
+            </div>
+          </div>
+          <table class="ptable" style="margin-top:1.5rem;">
+            <thead><tr><th>Problem</th><th>Difficulty</th><th>Key Concept</th></tr></thead>
+            <tbody>
+              <tr><td>Climbing Stairs</td><td><span class="diff diff-easy">Easy</span></td><td>Recursion / First DP</td></tr>
+              <tr><td>Maximum Depth of Binary Tree</td><td><span class="diff diff-easy">Easy</span></td><td>DFS</td></tr>
+              <tr><td>Merge Two Sorted Lists</td><td><span class="diff diff-easy">Easy</span></td><td>Linked List</td></tr>
+              <tr><td>Symmetric Tree</td><td><span class="diff diff-easy">Easy</span></td><td>Tree Recursion</td></tr>
+              <tr><td>Path Sum</td><td><span class="diff diff-easy">Easy</span></td><td>Tree DFS</td></tr>
+              <tr><td>Min Stack</td><td><span class="diff diff-medium">Medium</span></td><td>Stack Design</td></tr>
+              <tr><td>Validate Binary Search Tree</td><td><span class="diff diff-medium">Medium</span></td><td>BST / Recursion</td></tr>
+              <tr><td>Number of Islands</td><td><span class="diff diff-medium">Medium</span></td><td>DFS / BFS — First Graph!</td></tr>
+              <tr><td>Binary Tree Level Order Traversal</td><td><span class="diff diff-medium">Medium</span></td><td>BFS / Queue</td></tr>
+              <tr><td>LRU Cache</td><td><span class="diff diff-medium">Medium</span></td><td>HashMap + Linked List</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="phase" onclick="togglePhase(this)">
+        <div class="phase-header">
+          <div class="phase-num-box">03</div>
+          <div class="phase-head-text">
+            <div class="phase-meta">Problems 101–150 · ~4–5 Weeks · Medium</div>
+            <div class="phase-name">Strengthening the Core</div>
+            <div class="phase-desc">Where most people give up. Don't.</div>
+            <div class="phase-tags">
+              <span class="tag">Binary Search</span>
+              <span class="tag">Dynamic Programming</span>
+              <span class="tag">Backtracking</span>
+              <span class="tag">Sorting</span>
+            </div>
+          </div>
+          <div class="phase-arrow">▼</div>
+        </div>
+        <div class="phase-body">
+          <div class="callout callout-honest">
+            <div class="callout-icon">⚠️</div>
+            <div>
+              <div class="callout-lbl">DP Warning</div>
+              Dynamic Programming will feel impossible at first. That is completely normal. Start with Climbing Stairs → House Robber → Coin Change. Do them in that exact order. DP clicks suddenly, and when it does, it really clicks.
+            </div>
+          </div>
+          <table class="ptable" style="margin-top:1.5rem;">
+            <thead><tr><th>Problem</th><th>Difficulty</th><th>Key Concept</th></tr></thead>
+            <tbody>
+              <tr><td>Binary Search</td><td><span class="diff diff-easy">Easy</span></td><td>Binary Search Template</td></tr>
+              <tr><td>Search in Rotated Sorted Array</td><td><span class="diff diff-medium">Medium</span></td><td>Modified Binary Search</td></tr>
+              <tr><td>House Robber</td><td><span class="diff diff-medium">Medium</span></td><td>1D DP</td></tr>
+              <tr><td>Coin Change</td><td><span class="diff diff-medium">Medium</span></td><td>DP / BFS</td></tr>
+              <tr><td>Longest Common Subsequence</td><td><span class="diff diff-medium">Medium</span></td><td>2D DP</td></tr>
+              <tr><td>Permutations</td><td><span class="diff diff-medium">Medium</span></td><td>Backtracking</td></tr>
+              <tr><td>Subsets</td><td><span class="diff diff-medium">Medium</span></td><td>Backtracking</td></tr>
+              <tr><td>Merge Intervals</td><td><span class="diff diff-medium">Medium</span></td><td>Sorting + Greedy</td></tr>
+              <tr><td>Word Search</td><td><span class="diff diff-medium">Medium</span></td><td>DFS + Backtracking</td></tr>
+              <tr><td>Kth Largest Element</td><td><span class="diff diff-medium">Medium</span></td><td>Heap / QuickSelect</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="phase" onclick="togglePhase(this)">
+        <div class="phase-header">
+          <div class="phase-num-box">04</div>
+          <div class="phase-head-text">
+            <div class="phase-meta">Problems 151–200 · ~4–5 Weeks · Medium to Hard</div>
+            <div class="phase-name">Sharpening the Mind</div>
+            <div class="phase-desc">Graphs, advanced DP, greedy. You've earned this.</div>
+            <div class="phase-tags">
+              <span class="tag">Graphs</span>
+              <span class="tag">Advanced DP</span>
+              <span class="tag">Greedy</span>
+              <span class="tag">Heaps</span>
+            </div>
+          </div>
+          <div class="phase-arrow">▼</div>
+        </div>
+        <div class="phase-body">
+          <div class="callout callout-success">
+            <div class="callout-icon">🏁</div>
+            <div>
+              <div class="callout-lbl">What "reaching here" means</div>
+              If you're at Phase 4, you can think algorithmically. You can break problems down. Whether you use that for interviews, competitive programming, or just the satisfaction of solving — that's your call. You've already built the skill that matters.
+            </div>
+          </div>
+          <table class="ptable" style="margin-top:1.5rem;">
+            <thead><tr><th>Problem</th><th>Difficulty</th><th>Key Concept</th></tr></thead>
+            <tbody>
+              <tr><td>Course Schedule</td><td><span class="diff diff-medium">Medium</span></td><td>Topological Sort</td></tr>
+              <tr><td>Pacific Atlantic Water Flow</td><td><span class="diff diff-medium">Medium</span></td><td>Graph DFS/BFS</td></tr>
+              <tr><td>Longest Increasing Subsequence</td><td><span class="diff diff-medium">Medium</span></td><td>DP / Binary Search</td></tr>
+              <tr><td>Meeting Rooms II</td><td><span class="diff diff-medium">Medium</span></td><td>Greedy + Heap</td></tr>
+              <tr><td>Jump Game II</td><td><span class="diff diff-medium">Medium</span></td><td>Greedy</td></tr>
+              <tr><td>Edit Distance</td><td><span class="diff diff-medium">Medium</span></td><td>2D DP</td></tr>
+              <tr><td>Alien Dictionary</td><td><span class="diff diff-hard">Hard</span></td><td>Graph Topological Sort</td></tr>
+              <tr><td>Word Ladder</td><td><span class="diff diff-hard">Hard</span></td><td>BFS</td></tr>
+              <tr><td>Serialize / Deserialize Binary Tree</td><td><span class="diff diff-hard">Hard</span></td><td>Tree BFS/DFS</td></tr>
+              <tr><td>Find Median from Data Stream</td><td><span class="diff diff-hard">Hard</span></td><td>Two Heaps</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- PATTERNS SECTION -->
+  <section id="patterns">
+    <div class="section-header">
+      <div class="section-num">04</div>
+      <div class="section-head-text">
+        <div class="section-label">How Problems Work</div>
+        <div class="section-title">10 Patterns.<br>Infinite Problems.</div>
+        <div class="section-sub">Almost every problem is a variation of one of these. Learn to recognize them and you stop solving from scratch.</div>
+      </div>
+    </div>
+
+    <div class="pattern-list">
+      <div class="pattern-row"><div class="pr-num">01</div><div class="pr-name">Two Pointers</div><div class="pr-hint">Sorted array or need pairs. Move from both ends inward.</div></div>
+      <div class="pattern-row"><div class="pr-num">02</div><div class="pr-name">Sliding Window</div><div class="pr-hint">Subarray / substring with a constraint. Expand right, shrink left.</div></div>
+      <div class="pattern-row"><div class="pr-num">03</div><div class="pr-name">Fast & Slow Pointers</div><div class="pr-hint">Cycle detection, middle of linked list. Floyd's algorithm.</div></div>
+      <div class="pattern-row"><div class="pr-num">04</div><div class="pr-name">Binary Search</div><div class="pr-hint">Not just sorted arrays. Any time you can eliminate half the search space.</div></div>
+      <div class="pattern-row"><div class="pr-num">05</div><div class="pr-name">Tree DFS / BFS</div><div class="pr-hint">DFS via recursion or stack. BFS via queue for level-order traversal.</div></div>
+      <div class="pattern-row"><div class="pr-num">06</div><div class="pr-name">Graph BFS / DFS</div><div class="pr-hint">Connected components, shortest path, islands, dependencies.</div></div>
+      <div class="pattern-row"><div class="pr-num">07</div><div class="pr-name">Dynamic Programming</div><div class="pr-hint">Overlapping subproblems. Memoize recursion. Build a table.</div></div>
+      <div class="pattern-row"><div class="pr-num">08</div><div class="pr-name">Backtracking</div><div class="pr-hint">Explore all possibilities with pruning. Permutations, combinations, subsets.</div></div>
+      <div class="pattern-row"><div class="pr-num">09</div><div class="pr-name">Heap / Priority Queue</div><div class="pr-hint">Top-K problems, merge K sorted lists, streaming data.</div></div>
+      <div class="pattern-row"><div class="pr-num">10</div><div class="pr-name">Trie</div><div class="pr-hint">Prefix trees. Word search, autocomplete, dictionary problems.</div></div>
+    </div>
+
+    <div class="callout callout-tip" style="margin-top:1.5rem;">
+      <div class="callout-icon">💡</div>
+      <div>
+        <div class="callout-lbl">How to use these patterns</div>
+        Don't memorize all 10 at once. Learn each pattern when you encounter it. After Phase 1, start solving problems by topic using the LeetCode Patterns list — group practice builds recognition far faster than random solving.
+      </div>
+    </div>
+  </section>
+
+  <!-- COMMUNITY SECTION -->
+  <section id="community">
+    <div class="section-header">
+      <div class="section-num">05</div>
+      <div class="section-head-text">
+        <div class="section-label">The Society Angle</div>
+        <div class="section-title">You're Not<br>Doing This Alone</div>
+        <div class="section-sub">Being part of a community is an unfair advantage. Here's how to use it.</div>
+      </div>
+    </div>
+
+    <div class="cards-3">
+      <div class="grid-card">
+        <div class="card-accent-dot"></div>
+        <div class="card-title">Share your attempts, not just solutions</div>
+        <div class="card-text">Post "I tried this approach but got stuck here" — not just "I solved it." The struggle is where the learning is, and it normalizes difficulty for everyone.</div>
+      </div>
+      <div class="grid-card">
+        <div class="card-accent-dot blue"></div>
+        <div class="card-title">Ask dumb questions</div>
+        <div class="card-text">Every "obvious" question you're afraid to ask is a question 5 other people have. Asking out loud creates the kind of community where everyone gets better faster.</div>
+      </div>
+      <div class="grid-card">
+        <div class="card-accent-dot green"></div>
+        <div class="card-title">Pair up for accountability</div>
+        <div class="card-text">Find one person at your level and tell each other what problem you solved today. That's it. Two-minute check-in. Dramatically improves consistency.</div>
+      </div>
+      <div class="grid-card">
+        <div class="card-accent-dot gold"></div>
+        <div class="card-title">Attend society sessions</div>
+        <div class="card-text">Watching someone think through a problem out loud is one of the highest-leverage learning activities. You absorb pattern recognition passively just by being in the room.</div>
+      </div>
+      <div class="grid-card">
+        <div class="card-accent-dot"></div>
+        <div class="card-title">Celebrate the small wins</div>
+        <div class="card-text">First Easy solved. First Medium solved. First time you recognized a pattern without help. These milestones matter — share them.</div>
+      </div>
+      <div class="grid-card">
+        <div class="card-accent-dot blue"></div>
+        <div class="card-title">No gatekeeping</div>
+        <div class="card-text">This community exists to build, not to flex. Whether you're on problem 3 or problem 150 — you belong here and your progress counts.</div>
+      </div>
+    </div>
+
+    <div class="callout callout-honest" style="margin-top:2rem;">
+      <div class="callout-icon">📢</div>
+      <div>
+        <div class="callout-lbl">The culture we're building</div>
+        The goal isn't a leaderboard. It's a room — physical or digital — where solving problems is the normal thing to do. Where asking for help is expected. Where nobody quits alone. That's the DSA culture we're building here, one problem at a time.
+      </div>
+    </div>
+  </section>
+
+  <!-- RESOURCES SECTION -->
+  <section id="resources">
+    <div class="section-header">
+      <div class="section-num">06</div>
+      <div class="section-head-text">
+        <div class="section-label">External Tools</div>
+        <div class="section-title">Curated<br>Resources</div>
+        <div class="section-sub">Don't use all of these. Pick one list and follow it. The best resource is the one you actually use.</div>
+      </div>
+    </div>
+
+    <div class="resource-list">
+      <div class="resource-item">
+        <div class="resource-icon">🟢</div>
+        <div>
+          <div class="resource-name">LeetCode Beginner's Guide (Explore)</div>
+          <div class="resource-desc">Built-in guided path at leetcode.com/explore. Your very first stop as a complete beginner.</div>
+        </div>
+        <span class="resource-tag res-start">Start Here</span>
+      </div>
+      <div class="resource-item">
+        <div class="resource-icon">🎯</div>
+        <div>
+          <div class="resource-name">Blind 75</div>
+          <div class="resource-desc">75 handpicked problems covering all major topics. Ordered by real difficulty with prerequisites first. The most trusted list in the community.</div>
+        </div>
+        <span class="resource-tag res-after">After Phase 1</span>
+      </div>
+      <div class="resource-item">
+        <div class="resource-icon">📋</div>
+        <div>
+          <div class="resource-name">Striver's SDE Sheet</div>
+          <div class="resource-desc">190 problems curated for product-company interviews. Excellent editorial explanations. Use if you're targeting placements or internships.</div>
+        </div>
+        <span class="resource-tag res-after">After Phase 2</span>
+      </div>
+      <div class="resource-item">
+        <div class="resource-icon">🗺️</div>
+        <div>
+          <div class="resource-name">Striver's A2Z DSA Sheet</div>
+          <div class="resource-desc">The most comprehensive free DSA roadmap. Covers full theory + practice from scratch. Use this if you want to go deep on fundamentals alongside practice.</div>
+        </div>
+        <span class="resource-tag res-after">Any Time</span>
+      </div>
+      <div class="resource-item">
+        <div class="resource-icon">🔢</div>
+        <div>
+          <div class="resource-name">LeetCode Patterns</div>
+          <div class="resource-desc">Problems grouped by algorithmic pattern. After 100+ problems, switch to this to master specific techniques. Kills the random-grinding trap.</div>
+        </div>
+        <span class="resource-tag res-advanced">Phase 3+</span>
+      </div>
+      <div class="resource-item">
+        <div class="resource-icon">🏆</div>
+        <div>
+          <div class="resource-name">LeetCode Weekly Contests</div>
+          <div class="resource-desc">Every Sunday. 4 problems, 90 min, no hints. Best interview simulation available. Join when you've comfortably solved 50+ problems.</div>
+        </div>
+        <span class="resource-tag res-advanced">Phase 2+</span>
+      </div>
+    </div>
+
+    <!-- TIMELINE -->
+    <p style="margin:3rem 0 1rem; font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:var(--muted); font-weight:700;">Suggested 6-Month Timeline (Adjust Freely)</p>
+
+    <div class="timeline" style="border:2px solid var(--ink);">
+      <div class="tl-row"><div class="tl-month">Month 1</div><div class="tl-content"><div class="tl-phase">Phase 1 · Problems 1–50</div><div class="tl-name">Getting Comfortable</div><div class="tl-topics">Arrays, Strings, HashMaps — all Easy. Build the habit first.</div></div></div>
+      <div class="tl-row"><div class="tl-month">Month 2</div><div class="tl-content"><div class="tl-phase">Phase 2 · Problems 51–100</div><div class="tl-name">Building the Foundation</div><div class="tl-topics">Recursion, Trees, Linked Lists — Easy to Medium</div></div></div>
+      <div class="tl-row"><div class="tl-month">Month 3</div><div class="tl-content"><div class="tl-phase">Phase 3 · Problems 101–150</div><div class="tl-name">Strengthening the Core</div><div class="tl-topics">Binary Search, DP intro, Backtracking — Medium</div></div></div>
+      <div class="tl-row"><div class="tl-month">Month 4</div><div class="tl-content"><div class="tl-phase">Phase 4 · Problems 151–200</div><div class="tl-name">Sharpening the Mind</div><div class="tl-topics">Graphs, Advanced DP, Greedy — Medium to Hard</div></div></div>
+      <div class="tl-row"><div class="tl-month">Month 5</div><div class="tl-content"><div class="tl-phase">Pattern Mastery</div><div class="tl-name">Filling Gaps</div><div class="tl-topics">Revisit weak areas, solve by pattern, join contests</div></div></div>
+      <div class="tl-row" style="border-bottom:none;"><div class="tl-month">Month 6</div><div class="tl-content"><div class="tl-phase">Your Choice</div><div class="tl-name">Go Wherever You Want</div><div class="tl-topics">Internship prep · Competitive programming · Keep going for fun · Teach someone else</div></div></div>
+    </div>
+  </section>
+
+</main>
+
+<!-- FINAL CTA -->
+<div class="final-cta">
+  <div class="final-headline">One Problem.<br><span>Right Now.</span></div>
+  <p class="final-sub">Not after dinner. Not once the semester slows down. Not when you "feel ready." The only way in is through. Open LeetCode and solve one problem today.</p>
+  <div class="final-buttons">
+    <a href="https://leetcode.com/problemset/" target="_blank" class="btn-white">Open LeetCode →</a>
+  </div>
+  <p style="margin-top:3rem; font-size:10px; color:rgba(255,255,255,0.3); letter-spacing:0.1em; text-transform:uppercase;">Made with ♥ by the WiTS · For every member, at every level</p>
+</div>
+
+<footer>
+  <span>WiTS · Beginner's Guide · 2025 Edition</span>
+  <span>Covers Problems 1–200+ · <strong>Build the habit, not just the skill</strong></span>
+</footer>
+
+<script>
+  // Progress bar
+  window.addEventListener('scroll', () => {
+    const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+    document.getElementById('progressBar').style.width = pct + '%';
+  });
+
+  // Intersection observer
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('section').forEach(s => io.observe(s));
+
+  // Nav active
+  const secs = document.querySelectorAll('section[id]');
+  const links = document.querySelectorAll('.nav-links a');
+  window.addEventListener('scroll', () => {
+    let cur = '';
+    secs.forEach(s => { if (window.scrollY >= s.offsetTop - 80) cur = s.id; });
+    links.forEach(a => {
+      a.classList.remove('active');
+      if (a.getAttribute('href') === '#' + cur) a.classList.add('active');
+    });
+  });
+
+  // Audience tabs
+  function switchAud(id, btn) {
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.aud-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + id).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  // Phase accordion
+  function togglePhase(el) {
+    const isOpen = el.classList.contains('open');
+    document.querySelectorAll('.phase').forEach(p => p.classList.remove('open'));
+    if (!isOpen) el.classList.add('open');
+  }
+
+  // HABIT TRACKER
+  const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  let done = JSON.parse(localStorage.getItem('habit-week') || '{}');
+
+  function renderWeek() {
+    const grid = document.getElementById('weekGrid');
+    grid.innerHTML = '';
+    let count = 0;
+    days.forEach((d, i) => {
+      const isDone = done[i];
+      if (isDone) count++;
+      const box = document.createElement('div');
+      box.className = 'day-box' + (isDone ? ' done' : '');
+      box.innerHTML = `<div class="day-lbl">${d}</div><div class="day-num">${i + 1}</div><div class="day-check">✓</div>`;
+      box.onclick = () => {
+        done[i] = !done[i];
+        localStorage.setItem('habit-week', JSON.stringify(done));
+        renderWeek();
+      };
+      grid.appendChild(box);
+    });
+    document.getElementById('streakCount').textContent = count;
+  }
+
+  function resetStreak() {
+    done = {};
+    localStorage.setItem('habit-week', '{}');
+    renderWeek();
+  }
+
+  renderWeek();
+</script>
+</body>
+</html>
+
